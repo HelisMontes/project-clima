@@ -12,6 +12,8 @@ const obtenerClima = (e) => {
         printMessage('Ambos campos son obligatorios');
         return;
     }
+    ;
+    consultarApi(ciudad.value, pais.value);
 };
 const printMessage = (message) => {
     const alerta = document.querySelector('.bg-red-100');
@@ -27,4 +29,20 @@ const printMessage = (message) => {
             divMessage.remove();
         }, 3000);
     }
+    ;
+};
+const consultarApi = (ciudad, pais) => {
+    const apiKey = '366c702cc6505ba2ca508a46c7d8552b';
+    const url = `http://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${apiKey}`;
+    fetch(url)
+        .then(result => result.json())
+        .then(data => {
+        const { cod, main: { temp, temp_max, temp_min } } = data;
+        if (cod === '404') {
+            printMessage('La ciudad no existe');
+            return;
+        }
+        ;
+        console.log(temp, temp_max, temp_min);
+    });
 };

@@ -5,7 +5,7 @@ const ciudad:any=document.querySelector('#ciudad');
 const pais:any=document.querySelector('#pais');
 
 window.addEventListener('load', ()=>{
-    document.addEventListener('submit', obtenerClima)
+    document.addEventListener('submit', obtenerClima);
 })
 
 const obtenerClima = (e:any):void => {   
@@ -13,10 +13,11 @@ const obtenerClima = (e:any):void => {
     if( ciudad.value ==='' || pais.value===''){
         printMessage('Ambos campos son obligatorios');
         return
-    }
-}
+    };
+    consultarApi(ciudad.value, pais.value);
+};
 
-const printMessage = (message:string) => {
+const printMessage = (message:string):void => {
     const alerta:any = document.querySelector('.bg-red-100')
     if(!alerta){
         const divMessage:any = document.createElement('div');
@@ -30,5 +31,21 @@ const printMessage = (message:string) => {
         setTimeout(()=>{
             divMessage.remove();
         },3000);
-    }
+    };
+};
+
+const consultarApi = (ciudad:string, pais:string):void => {
+    const apiKey:string = '366c702cc6505ba2ca508a46c7d8552b';
+    const url:string = `http://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${apiKey}`
+    fetch(url)
+        .then(result => result.json())
+        .then(data => {
+            const {cod, main:{temp, temp_max, temp_min}}= data
+            if(cod === '404'){
+                printMessage('La ciudad no existe');
+                return;
+            };
+            console.log(temp, temp_max, temp_min)
+        });
+
 }
